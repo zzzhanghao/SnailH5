@@ -6,16 +6,19 @@ const mongoose = require('mongoose')
 
 //自动扫指定目录下面的文件并且加载
 function scanFilesByFolder(dir, cb) {
+	//获取到绝对目录地址
 	let _folder = path.resolve(__dirname, dir);
-	console.log(_folder);
 	if(!getFileStat(_folder)){
 		return;
 	}
 	try {
 		const files = fs.readdirSync(_folder);
 		files.forEach((file) => {
+			//具体文件名
 			let filename = file.replace('.js', '');
+			//require 引入
 			let oFileCnt = require(_folder + '/' + filename);
+			//执行cb ，其实是主要执行 oFileCnt拿到返回的东西  ，并且传入 filename
 			cb && cb(filename, oFileCnt);
 		})
 
@@ -53,7 +56,6 @@ const initRouter = function(app){
 	require('../router.js')({...app, router});
 	return router;
 }
-
 // 初始化控制器
 const initController = function(app){
 	let controllers = {};
@@ -63,14 +65,6 @@ const initController = function(app){
 	return controllers;
 }
 
-//初始化service
-function initService(app){
-	let services = {};
-	scanFilesByFolder('../service',(filename, service)=>{
-		services[filename] = service(app);
-	})
-	return services;
-}
 //初始化model
 function initModel(app){
 	// 链接数据库, 配置数据库链接
@@ -82,33 +76,23 @@ function initModel(app){
 		// app上扩展两个属性
 		app.$mongoose = mongoose;
 		app.$db = mongoose.connection
-
 	}
 	// 初始化model文件夹
 	let model = {};
-	scanFilesByFolder('../model',(filename, modelConfig)=>{
+	scanFilesByFolder('../models',(filename, modelConfig)=>{
 		model[filename] = modelConfig({...app, mongoose});
+
 	});
 	return model;
 }
-
-// 初始化中间件middleware
-function initMiddleware(app){
-	let middleware = {}
-	scanFilesByFolder('../middleware',(filename, middlewareConf)=>{
-		middleware[filename] = middlewareConf(app);
+//初始化service
+function initService(app){
+	let services = {};
+	scanFilesByFolder('../service',(filename, service)=>{
+		services[filename] = service(app);
 	})
-	//初始化配置中间件
-	if(app.$config.middleware && Array.isArray(app.$config.middleware)){
-		app.$config.middleware.forEach(mid=>{
-			if(middleware[mid]){
-				app.$app.use(middleware[mid]);
-			}
-		})
-	}
-	return middleware;
+	return services;
 }
-
 // 初始化扩展
 function initExtend(app) {
 	scanFilesByFolder('../extend',(filename, extendFn)=>{
@@ -116,20 +100,13 @@ function initExtend(app) {
 	})
 }
 
-//加载定时任务
-function initSchedule(){
-	scanFilesByFolder('../schedule',(filename, scheduleConf)=>{
-		schedule.scheduleJob(scheduleConf.interval, scheduleConf.handler)
-	})
-}
 
 module.exports = {	
 	initConfig,
-	initController,
-	initService,
 	initRouter,
+	initController,
 	initModel,
-	initMiddleware,
 	initExtend,
-	initSchedule
+	initService,
+
 }

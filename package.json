@@ -11,6 +11,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "crypto-js": "^4.0.0",
     "element-ui": "^2.15.3",
     "koa-body": "^4.2.0",
     "node-schedule": "^2.0.0",
@@ -28,6 +29,9 @@
     "koa-json": "^2.0.2",
     "koa-jwt": "^4.0.1",
     "koa-router": "^10.0.0",
+    "koa-static": "^5.0.0",
+    "koa-views": "^7.0.1",
+    "koa2-cors": "^2.0.6",
     "mongodb": "^3.6.9",
     "mongoose": "^5.13.2",
     "node-sass": "^4.14.1",
