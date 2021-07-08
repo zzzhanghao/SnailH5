@@ -99,6 +99,23 @@ function initExtend(app) {
 		app['$' + filename] = Object.assign(app['$' + filename] || {}, extendFn(app))
 	})
 }
+// 初始化中间件middleware
+function initMiddleware(app){
+	let middleware = {}
+	scanFilesByFolder('../middleware',(filename, middlewareConf)=>{
+		middleware[filename] = middlewareConf(app);
+	})
+	//初始化配置中间件
+	if(app.$config.middleware && Array.isArray(app.$config.middleware)){
+		app.$config.middleware.forEach(mid=>{
+			if(middleware[mid]){
+				app.$app.use(middleware[mid]);
+			}
+		})
+	}
+	return middleware;
+}
+
 
 
 module.exports = {	
@@ -108,5 +125,5 @@ module.exports = {
 	initModel,
 	initExtend,
 	initService,
-
+	initMiddleware
 }

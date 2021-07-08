@@ -1,9 +1,10 @@
 /**
  * 封装koa mvc基础架构初始化工作
  */
+ const koaBody = require('koa-body');
  const path = require('path')
  const Koa = require('koa');
- const {initConfig, initRouter, initController, initModel, initExtend, initService} = require('./loader')
+ const {initConfig, initRouter, initController, initModel, initExtend, initService, initMiddleware} = require('./loader')
  class Application{
    constructor(){
      this.$app = new Koa();
@@ -15,11 +16,12 @@
      this.$controller = initController(this)
      // 初始化service
 		 this.$service = initService(this);
+     // 初始化middleware
+		 this.$middleware = initMiddleware(this);
      // 初始化model
 		 this.$model = initModel(this)
      // 初始化router
      this.$router = initRouter(this)
-
 
      // 初始化扩展
 		 initExtend(this);
@@ -29,6 +31,7 @@
        await next()
      })
      
+
      //使用所有的路由
 		 this.$app.use(this.$router.routes());
 

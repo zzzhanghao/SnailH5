@@ -48,6 +48,59 @@ module.exports = app => ({
 		password = await this.createPassword(password);
 		return password === hash_password;
 	},
-
+	// 检测目录是否存在，不存在则新建目录
+	async dirExists(dir){
+		let {$helper} = app;
+		let isExists = await getStat(dir);
+		//如果该路径且不是文件，返回true
+		if (isExists && isExists.isDirectory()) {
+			return true;
+		} else if (isExists) {     //如果该路径存在但是文件，返回false
+			return false;
+		}
+		//如果该路径不存在
+		let tempDir = path.parse(dir).dir;      //拿到上级路径
+		//递归判断，如果上级目录也不存在，则会代码会在此处继续循环执行，直到目录存在
+		let status = await $helper.dirExists(tempDir);
+		let mkdirStatus;
+		if (status) {
+			mkdirStatus = await mkdir(dir);
+		}
+		return mkdirStatus;
+	}
 
 })
+
+/**
+ * 读取路径信息
+ * @param {string} path 路径
+ */
+ function getStat(path) {
+	return new Promise((resolve) => {
+		//fs.stat检查文件是否存在，
+		fs.stat(path, (err, stats) => {
+			if (err) {
+				resolve(false);
+			} else {
+		//如果没有操作，就回调他的stats，这里面有很多文件的信息，是个对象
+				resolve(stats);
+			}
+		})
+	})
+}
+
+/**
+ * 创建路径
+ * @param {string} dir 路径
+ */
+function mkdir(dir) {
+	return new Promise((resolve) => {
+		fs.mkdir(dir, err => {
+			if (err) {
+				resolve(false);
+			} else {
+				resolve(true);
+			}
+		})
+	})
+}

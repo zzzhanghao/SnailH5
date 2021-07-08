@@ -59,5 +59,54 @@ module.exports = app => ({
 		const query = {username: {$in: username}};
 		return $model.user.findOne(query).select('password').exec();
 	},
-
+  	/**
+	 * 更新个人头像
+	 * @param {*} url
+	 */
+	async updateUserAvatar(url){
+		const {ctx, $model} = app;
+		const userData = await ctx.userData
+		await $model.user.findByIdAndUpdate(userData._id, {$set: {avatar: url}});
+		return $model.user.findOne({ _id: userData._id }, selectUserKey).exec();
+	},
+  	/**
+	 * 更新用户昵称
+	 * @param {*} name
+	 */
+	async updateUserName(name){
+		const {ctx, $model} = app;
+		const userData = await ctx.userData
+		await $model.user.findByIdAndUpdate(userData._id, {$set: {name: name}});
+		return $model.user.findOne({ _id: userData._id }, selectUserKey).exec();
+	},
+	/**
+	 * 更新个人密码
+	 * @param {*} newPass
+	 */
+	async updateUserPass(newPass){
+		const {ctx, $model} = app;
+		const userData = await ctx.userData
+		await $model.user.findByIdAndUpdate(userData._id, {$set: {password: newPass}});
+		return $model.user.findOne({ _id: userData._id }, selectUserKey).exec();
+	},
+	// 关键字模糊查询
+	async getUserByKeyWords(keywords){
+		const {$model} = app;
+		return  await $model.user.find(
+			{
+				$or : [ //多条件，数组
+					{name : {$regex : keywords}},
+					{username : {$regex : keywords}},
+					{email : {$regex : keywords}}
+				]
+			},
+			{
+				password: 0
+			},
+			{
+				sort : { _id : -1 },
+				limit : 20
+			}
+		)
+	}
 })

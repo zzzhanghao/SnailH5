@@ -8,6 +8,7 @@ module.exports = app => ({
   async login(){
     const { ctx, $service, $helper } = app;
 		const { username, password } = ctx.request.body
+    console.log(ctx.request);
 		// 验证是否存在
 		let user = await $service.user.getUsersByUsername(username);
 		if (!user) {
