@@ -1,7 +1,6 @@
 /**
  * 封装koa mvc基础架构初始化工作
  */
- const koaBody = require('koa-body');
  const path = require('path')
  const Koa = require('koa');
  const {initConfig, initRouter, initController, initModel, initExtend, initService, initMiddleware} = require('./loader')

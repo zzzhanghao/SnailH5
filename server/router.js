@@ -12,14 +12,17 @@ module.exports = app => {
 	router.post('/snail/user/update/avatar', $middleware.auth, $controller.user.updateUserAvatar);
 	router.get('/snail/user/getUserList', $middleware.auth, $controller.user.getUserList);
 	// 页面
-	router.get('/quark/page/getMyPages', $middleware.auth, $controller.page.myPages);
-	router.post('/quark/page/create', $middleware.auth, $controller.page.create);
-	router.post('/quark/page/update', $middleware.auth, $controller.page.updatePage);
-	router.post('/quark/page/delete', $middleware.auth, $controller.page.deletePage);
-	router.post('/quark/page/copy', $middleware.auth, $controller.page.copyPage);
-	router.post('/quark/page/setPublish', $middleware.auth, $controller.page.publish);
-	router.post('/quark/page/setTemplate', $middleware.auth, $controller.page.setTemplate);
-	router.get('/quark/page/detail', $middleware.auth, $controller.page.pageDetail);
+	router.get('/snail/page/getMyPages', $middleware.auth, $controller.page.myPages);  //前端对应我的作品
+	router.post('/snail/page/create', $middleware.auth, $controller.page.create);      //新建页面
+	router.post('/snail/page/update', $middleware.auth, $controller.page.updatePage);  //更新页面
+	router.post('/snail/page/delete', $middleware.auth, $controller.page.deletePage);  //删除自己新建的页面
+	router.post('/snail/page/copy', $middleware.auth, $controller.page.copyPage);      //复制
+	router.post('/snail/page/setPublish', $middleware.auth, $controller.page.publish); //更多->发布
+	router.post('/snail/page/setTemplate', $middleware.auth, $controller.page.setTemplate); //更多 --》 设置为我的模板
+	router.get('/snail/page/detail', $middleware.auth, $controller.page.pageDetail);   //
+  // 页面渲染
+  router.get('/snail/view/:_id', $controller.page.view);
+
 
 
 
