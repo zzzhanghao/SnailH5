@@ -100,4 +100,66 @@ module.exports = app => ({
 		const { $model } = app;
 		return await $model.page.findById(id).exec()
 	},
+  	/**
+	 * 获取协作人列表
+	 * @param pageId
+	 * @returns {Promise<RegExpExecArray>}
+	 */
+	async getCooperationUserListByPageId(pageId) {
+		const {$model} = app;
+		let doc = await $model.page.findOne({_id: pageId}).populate({
+			path: 'members',
+			model: $model.user,
+			select: 'name username _id email avatar '
+		}).exec();
+		doc = doc.toObject();
+		console.log(doc);
+		return doc.members
+	},
+    	/**
+	 * 通过user list 添加协作人
+	 * @param pageId
+	 * @param userIds
+	 * @returns {Promise<$addToSet.cooperation_user|{$each}|query.cooperation_user|{$elemMatch}>}
+	 */
+	async addCooperationUser(pageId, userIds) {
+		const {$model} = app;
+		await $model.page.findByIdAndUpdate(pageId, {
+			$addToSet: {members: {$each: userIds}}
+		})
+    //给page添加完 members之后 ，再去获取pageData的数据拿到members
+		let pageData = await $model.page.findOne({_id: pageId}).populate({
+			path: 'members',
+			model: $model.user,
+			select: 'name username _id email avatar'
+		}).exec();
+		pageData = pageData.toObject();
+		return pageData.members
+	},
+  	/**
+	 * 移出协作人
+	 * @param pageId
+	 * @param userId
+	 * @returns {Promise<*>}
+	 */
+	async removeCooperationUser(pageId, userId) {
+		const {$model} = app;
+		return await $model.page.updateOne({_id: pageId}, {$pull: {members: userId}}, {
+			runValidators: true
+		})
+	},
+  	/**
+	 * 获取我的模板列表
+	 * @param pageMode
+	 */
+	async getMyTemplates(pageMode){
+		const {ctx, $model} = app;
+		let userData = ctx.userData
+		let query = {author: userData._id, isTemplate: true};
+		if (pageMode) {
+			query.pageMode = pageMode;
+		}
+		return await $model.page.find(query).select('_id title coverImage').exec();
+	},
+
 })

@@ -120,6 +120,28 @@ module.exports = app => ({
 		};
 		ctx.status = 200;
 		await ctx.render(pageMode[pageData.pageMode], {pageData: pageData})
-	}
-  
+	},
+  	/**
+	 * 获取我的模板列表
+	 * @returns {Promise<void>}
+	 */
+	async getMyTemplates(){
+		const { ctx, $service, $helper } = app;
+		let {pageMode} = ctx.request.query;
+		const pages = await $service.page.getMyTemplates(pageMode);
+		$helper.returnBody(true, pages)
+	},
+		/**
+	 * 获取模板市场所有模板
+	 * @param pageMode
+	 * @returns {Promise<*>}
+	 */
+		 async getPublishTemplates(pageMode){
+			const {$model} = app;
+			let query = {isPublish: true, isTemplate: true};
+			if (pageMode) {
+				query.pageMode = pageMode;
+			}
+			return await $model.page.find(query).select('_id title coverImage').exec();
+		},
 })

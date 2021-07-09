@@ -22,7 +22,20 @@ module.exports = app => {
 	router.get('/snail/page/detail', $middleware.auth, $controller.page.pageDetail);   //
   // 页面渲染
   router.get('/snail/view/:_id', $controller.page.view);
+  	// 页面协作
+	router.get('/snail/page/getCooperationList', $middleware.auth, $controller.cooperation.getCooperationUserListByPageId);
+	router.post('/snail/page/addCooperation', $middleware.auth, $controller.cooperation.addCooperationUser);
+	router.post('/snail/page/delCooperation', $middleware.auth, $controller.cooperation.removeCooperationUser);
 
+  // 我的模板
+  router.get('/snail/page/getMyTemplates', $middleware.auth, $controller.page.getMyTemplates);
+  // // 模板市场
+  router.get('/snail/page/getPublishTemplates', $middleware.auth, $controller.page.getPublishTemplates);
+
+  // // html2canvas 跨域接口配置
+  // router.get('/snail/html2canvas/corsproxy', $controller.htmlToCanvas.corsproxy);
+	// psd上传相关
+	// router.post('/snail/psd/upload', $middleware.auth, $controller.psd.psdPpload);
 
 
 
