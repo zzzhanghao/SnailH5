@@ -33,10 +33,12 @@ module.exports = app => {
   router.get('/snail/page/getPublishTemplates', $middleware.auth, $controller.page.getPublishTemplates);
 
   // // html2canvas 跨域接口配置
-  // router.get('/snail/html2canvas/corsproxy', $controller.htmlToCanvas.corsproxy);
+  router.get('/snail/html2canvas/corsproxy', $controller.htmlToCanvas.corsproxy);
 	// psd上传相关
-	// router.post('/snail/psd/upload', $middleware.auth, $controller.psd.psdPpload);
-
+	router.post('/snail/psd/upload', $middleware.auth, $controller.psd.psdPpload);
+	// 我的图片库
+	router.get('/snail/imageLib/myImages', $middleware.auth, $controller.image.getMyImages);
+	router.post('/snail/imageLib/upload', $middleware.auth, $controller.image.uploadImage);
 
 
   return router;
