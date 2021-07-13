@@ -41,7 +41,7 @@
   import resetPassword from '@/components/reset-password'
   import userInfo from '@/components/user-info'
   // import userModel from '@/libs/userModel'
-
+  
 	export default {
 		name: "user-head-btn",
 		components: {
@@ -59,7 +59,8 @@
 		},
 		computed: {
 			isLogined(){
-				return this.$store.state.user.access_token
+        console.log(this.$store.state.user);
+				// return this.$store.state.user.access_token
         return true
       },
 			userData() {

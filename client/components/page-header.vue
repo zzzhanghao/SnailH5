@@ -20,6 +20,7 @@
 	import userHeadBtn from '@/components/user-head-btn'
 
 	export default {
+    //父组件传fullwidth的值，下面这种形式是指fullWidth默认属性是boolean类型
 		props: {
 			fullWidth: Boolean
 		},

@@ -14,7 +14,7 @@ module.exports = {
 		// 另外也可以新增一个 ~ 指向 packages
 		config.resolve.alias
     .set('@', path.resolve('client'))
-    .set('@client', path.resolve('client'))
+    // .set('@client', path.resolve('client'))
     .set('@plugins', path.resolve('plugins'))
     .set('@server', path.resolve('server'))
 
